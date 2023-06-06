@@ -82,7 +82,7 @@ public class DialogueGraphView : GraphView
     {
         var dialogueNode = new DialogueNode
         {
-            title = nodeName,
+            title = "Dialogue Node",
             NodeType = "Dialogue",
             dialogueText = nodeName,
             GUID = Guid.NewGuid().ToString()
@@ -98,13 +98,19 @@ public class DialogueGraphView : GraphView
         button.text = "New Choice";
         dialogueNode.titleContainer.Add(button);
 
+        var varInputPort = GeneratePort(dialogueNode, Direction.Input, Port.Capacity.Multi);
+        varInputPort.portName = "Variable Input";
+        dialogueNode.inputContainer.Add(varInputPort);
+
+        
         var textField = new TextField(string.Empty);
+        textField.multiline = true;
+        textField.maxLength = 150;
         textField.RegisterValueChangedCallback(evt =>
         {
             dialogueNode.dialogueText = evt.newValue;
-            dialogueNode.title = evt.newValue;
         });
-        textField.SetValueWithoutNotify(dialogueNode.title);
+        textField.SetValueWithoutNotify(dialogueNode.dialogueText);
         dialogueNode.mainContainer.Add(textField);
 
         dialogueNode.RefreshExpandedState();

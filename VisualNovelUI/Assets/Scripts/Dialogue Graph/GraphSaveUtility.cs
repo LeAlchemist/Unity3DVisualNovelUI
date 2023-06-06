@@ -42,7 +42,8 @@ public class GraphSaveUtility
             {
                 BaseNodeGuid = outputNode.GUID,
                 PortName = connectedPorts[i].output.portName,
-                TargetNodeGuid = inputNode.GUID
+                TargetNodeGuid = inputNode.GUID,
+                TargetNodePort = connectedPorts[i].input.portName
             });
         }
 
@@ -95,7 +96,6 @@ public class GraphSaveUtility
     {
         foreach (var nodeData in _containerCache.DialogueNodeData)
         {
-
             var tempNode = _targetGraphView.CreateDialogueNode(nodeData.DialogueText);
             tempNode.GUID = nodeData.GUID;
             _targetGraphView.AddElement(tempNode);
@@ -115,15 +115,23 @@ public class GraphSaveUtility
             {
                 var targetNodeGUID = connections[j].TargetNodeGuid;
                 var targetNode = Nodes.First(x => x.GUID == targetNodeGUID);
-                LinkNodes(Nodes[i].outputContainer[j].Q<Port>(), (Port) targetNode.inputContainer[0]);
+                int targetNodePort = 0;
+                switch (connections[j].TargetNodePort)
+                {
+                    case "Input":
+                        targetNodePort = 0;
+                        break;
+                    case "Variable Input":
+                        targetNodePort = 1;
+                        break;
+                }
 
+                LinkNodes(Nodes[i].outputContainer[j].Q<Port>(), (Port) targetNode.inputContainer[targetNodePort]);
                 targetNode.SetPosition(new Rect(
                     _containerCache.DialogueNodeData.First(x => x.GUID == targetNodeGUID).Position,
                     _targetGraphView.defaultNodeSize));
             }
         }
-
-        
     }
 
     private void LinkNodes(Port output, Port input)

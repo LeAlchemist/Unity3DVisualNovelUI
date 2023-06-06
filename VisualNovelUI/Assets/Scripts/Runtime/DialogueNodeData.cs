@@ -8,6 +8,7 @@ public class DialogueNodeData
 {
     public string GUID;
     public string NodeType;
+    [TextArea]
     public string DialogueText;
     public Vector2 Position;
 }
